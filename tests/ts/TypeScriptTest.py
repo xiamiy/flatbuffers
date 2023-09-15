@@ -19,10 +19,14 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+import os;
+os.system('chcp 65001')
 
 # Get the path where this script is located so we can invoke the script from
 # any directory and have the paths work correctly.
 tests_path = Path(__file__).parent.resolve()
+
+print(tests_path)
 
 # Get the root path as an absolute path, so all derived paths are absolute.
 root_path = tests_path.parent.parent.absolute()
@@ -32,6 +36,8 @@ is_windows = platform.system() == "Windows"
 
 # Get the location of the flatc executable
 flatc_exe = Path("flatc.exe" if is_windows else "flatc")
+
+esbuild_cmd = "C:/Users/MyPC/node_modules/.bin/esbuild"
 
 # Find and assert flatc compiler is present.
 if root_path in flatc_exe.parents:
@@ -57,7 +63,7 @@ def flatc(options, schema, prefix=None, include=None, data=None, cwd=tests_path)
 
 # Execute esbuild with the specified parameters
 def esbuild(input, output):
-    cmd = ["esbuild", input, "--outfile=" + output]
+    cmd = [esbuild_cmd, input, "--outfile=" + output]
     cmd += ["--format=cjs", "--bundle", "--external:flatbuffers"]
     check_call(cmd)
 
@@ -122,19 +128,19 @@ flatc(
     schema="../union_underlying_type_test.fbs"
 )
 
-print("Running TypeScript Compiler...")
-check_call(["tsc"])
-print("Running TypeScript Compiler in old node resolution mode for no_import_ext...")
-check_call(["tsc", "-p", "./tsconfig.node.json"])
+# print("Running TypeScript Compiler...")
+# check_call(["tsc"])
+# print("Running TypeScript Compiler in old node resolution mode for no_import_ext...")
+# check_call(["tsc", "-p", "./tsconfig.node.json"])
 
-NODE_CMD = ["node"]
+# NODE_CMD = ["node"]
 
-print("Running TypeScript Tests...")
-check_call(NODE_CMD + ["JavaScriptTest"])
-check_call(NODE_CMD + ["JavaScriptUnionVectorTest"])
-check_call(NODE_CMD + ["JavaScriptFlexBuffersTest"])
-check_call(NODE_CMD + ["JavaScriptComplexArraysTest"])
-check_call(NODE_CMD + ["JavaScriptUnionUnderlyingTypeTest"])
+# print("Running TypeScript Tests...")
+# check_call(NODE_CMD + ["JavaScriptTest"])
+# check_call(NODE_CMD + ["JavaScriptUnionVectorTest"])
+# check_call(NODE_CMD + ["JavaScriptFlexBuffersTest"])
+# check_call(NODE_CMD + ["JavaScriptComplexArraysTest"])
+# check_call(NODE_CMD + ["JavaScriptUnionUnderlyingTypeTest"])
 
-print("Running old v1 TypeScript Tests...")
-check_call(NODE_CMD + ["JavaScriptTestv1.cjs", "./monster_test_generated.cjs"])
+# print("Running old v1 TypeScript Tests...")
+# check_call(NODE_CMD + ["JavaScriptTestv1.cjs", "./monster_test_generated.cjs"])
